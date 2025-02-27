@@ -47,11 +47,11 @@ public class MovieRepositoryIntegrationTest {
 
         Collection<Movie> movies = movieRepository.findAll();
 
-        assertThat( movies, is(Arrays.asList(
+        assertThat(movies, is(Arrays.asList(
                 new Movie(1, "Dark Knight", 152, Genre.ACTION),
                 new Movie(2, "Memento", 113, Genre.THRILLER),
                 new Movie(3, "Matrix", 136, Genre.ACTION)
-        )) );
+        )));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class MovieRepositoryIntegrationTest {
 
         Movie movie = movieRepository.findById(2);
 
-        assertThat( movie, is(new Movie(2, "Memento", 113, Genre.THRILLER)) );
+        assertThat(movie, is(new Movie(2, "Memento", 113, Genre.THRILLER)));
     }
 
     @Test
@@ -71,7 +71,23 @@ public class MovieRepositoryIntegrationTest {
 
         Movie movieFromDb = movieRepository.findById(4);
 
-        assertThat( movieFromDb, is(new Movie(4, "Super 8", 112, Genre.THRILLER)) );
+        assertThat(movieFromDb, is(new Movie(4, "Super 8", 112, Genre.THRILLER)));
+    }
+
+    @Test
+    public void loadMoviesByName() {
+        // 1. Insert Movie into DB
+        Collection<Movie> moviesAdded = Arrays.asList(
+                new Movie(4, "Super 8", 112, Genre.THRILLER),
+                new Movie(5, "Superman", 95, Genre.ACTION),
+                new Movie(6, "Superior", 123, Genre.COMEDY)
+        );
+
+        moviesAdded.stream().forEach(movie -> movieRepository.saveOrUpdate(movie));
+
+        // 2. Find movie by name
+        Collection<Movie> moviesFound = movieRepository.findByName("Super");
+        assertThat(moviesFound, is(moviesAdded));
     }
 
     @After
